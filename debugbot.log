@@ -1,13 +1,12 @@
-2019-12-02 18:56:03,684 - discord.client - INFO - logging in using static token
-2019-12-02 18:56:04,350 - discord.gateway - INFO - Created websocket connected to wss://gateway.discord.gg?encoding=json&v=6&compress=zlib-stream
-2019-12-02 18:56:04,352 - discord.gateway - INFO - Shard ID None has sent the IDENTIFY payload.
-2019-12-02 18:56:05,572 - discord.gateway - INFO - Shard ID None has connected to Gateway: ["gateway-prd-main-hj1t",{"micros":1085417,"calls":["discord-sessions-prd-1-28",{"micros":1079584,"calls":["start_session",{"micros":64021,"calls":["api-prd-main-cp7k",{"micros":58155,"calls":["get_user",{"micros":8301},"add_authorized_ip",{"micros":2897},"get_guilds",{"micros":4614},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":1000862,"calls":[]}]}]}] (Session ID: 253f325cf4a3ed7cd58225dc4507959e).
-2019-12-02 18:56:07,237 - discord.gateway - WARNING - Unknown event PRESENCES_REPLACE.
-2019-12-02 18:56:07,573 - discord - INFO - got server: testserver
-2019-12-02 18:56:07,573 - discord - INFO - got botlog channel: general
-2019-12-02 18:56:07,574 - discord - INFO - got appeals channel: appeals
-2019-12-02 18:56:07,576 - discord - INFO - logged into testserver as Perseus#5797
-2019-12-02 19:51:38,922 - discord.client - INFO - Cleaning up tasks.
-2019-12-02 19:51:38,923 - discord.client - INFO - Cleaning up after 5 tasks.
-2019-12-02 19:51:48,967 - discord.client - INFO - All tasks finished cancelling.
-2019-12-02 19:51:48,967 - discord.client - INFO - Closing the event loop.
+2020-01-10 20:55:19,653 - discord.client - INFO - logging in using static token
+2020-01-10 20:55:20,266 - discord.gateway - INFO - Created websocket connected to wss://gateway.discord.gg?encoding=json&v=6&compress=zlib-stream
+2020-01-10 20:55:20,268 - discord.gateway - INFO - Shard ID None has sent the IDENTIFY payload.
+2020-01-10 20:55:20,442 - discord.gateway - INFO - Shard ID None has connected to Gateway: ["gateway-prd-main-bft8",{"micros":43169,"calls":["discord-sessions-prd-1-7",{"micros":39393,"calls":["start_session",{"micros":38002,"calls":["api-prd-main-rc7v",{"micros":35084,"calls":["get_user",{"micros":3433},"add_authorized_ip",{"micros":2441},"get_guilds",{"micros":2244},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: 5d9c941e4d5aaaefcae9b52b2249da47).
+2020-01-10 20:55:22,444 - discord - INFO - got server: testserver
+2020-01-10 20:55:22,444 - discord - INFO - got botlog channel: general
+2020-01-10 20:55:22,444 - discord - INFO - got appeals channel: appeals
+2020-01-10 20:55:22,453 - discord - INFO - logged into testserver as Perseus#5797
+2020-01-10 20:55:56,872 - discord.client - INFO - Cleaning up tasks.
+2020-01-10 20:55:56,872 - discord.client - INFO - Cleaning up after 5 tasks.
+2020-01-10 20:55:57,007 - discord.client - INFO - All tasks finished cancelling.
+2020-01-10 20:55:57,007 - discord.client - INFO - Closing the event loop.

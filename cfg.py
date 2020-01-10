@@ -15,6 +15,7 @@ import urllib.request
 from bs4 import BeautifulSoup
 
 import hdebug
+import privatevalues as priv
 
 import shelve #for writing variables to a binary file
 
@@ -56,17 +57,17 @@ logger.debug('file logging initialized successfully')
 bot = commands.Bot(command_prefix='!')
 
 if hdebug.hdebug:
-	token = 'Mzk4ODM0NDIzOTIwODUyOTky.DTEVUg.ov4obWcG-RThLdvf3Rero22edkU'
+	token = priv.debugToken
 else:
-	token = 'Mjc5MjgyNjY4OTQyNzg2NTYw.Dz-HFQ.KtXwMHQ-u1GC2iLdKwRNeKCeKBw'
+	token = priv.liveToken
 
-tatsu = TatsuWrapper("586efe2800f32dbabed34fd0f6bb3fec-88807a15f7920c-cf7916e83b74e42d0e7653f605ec8c0e")
+tatsu = TatsuWrapper(priv.tatsuToken)
 
 # discourse api stuff
 forum_client = DiscourseClient(
         'https://forum.alt-h.net',
         api_username='Hermes',
-        api_key='a6d7a9f826bf6e8f425223dd8908cdb5f159d40556b4f2b70d51431ec2a523ef')
+        api_key=priv.discourseToken)
 
 if hdebug.hdebug:
 	fileDir = 'debug'
@@ -230,7 +231,7 @@ def naturaltime(tis):
 		return (str(tis) + " seconds")
 
 async def tatsu_score(member: commands.MemberConverter):
-	stats = await tatsu.get_user_stats(206742087562035202, member.id)
+	stats = await tatsu.get_user_stats(priv.liveServer, member.id)
 	score = stats['score']
 	return int(score)
 
@@ -242,24 +243,25 @@ async def init():
 	#server
 	global server
 	if hdebug.hdebug:
-		server = bot.get_guild(279295169642233857) #test server
+		server = bot.get_guild(priv.testServer) #test server
 	else:
-		server = bot.get_guild(206742087562035202) #alt+h server
+		server = bot.get_guild(priv.liveServer) #alt+h server
 	try:
 		logger.info('got server: ' + server.name)
 	except AttributeError:
 		logger.warning('server not found')
 
 	# channel ids
+	#channel that bot prints mod alerts to
 	global botlog
 	try:
 		botlog = bot.get_channel(settings['botlogID'])
 	except:
 		logger.warning("didn't find variable 'botlogID' in save file - reverting to server default")
 		if hdebug.hdebug:
-			botlog = bot.get_channel(279295169642233857) #channel that bot prints mod alerts to
+			botlog = bot.get_channel(priv.testBotlog)
 		else:
-			botlog = bot.get_channel(312717660871983106)
+			botlog = bot.get_channel(priv.liveBotlog)
 		settings['botlogID'] = botlog.id
 
 		with open(os.path.join(fileDir, settingsFile), "w") as file:
@@ -269,15 +271,16 @@ async def init():
 	except AttributeError:
 		logger.warning('botlog channel not found')
 
+	# channel that is used to hash things out with muted users
 	global appeals
 	try:
 		appeals = bot.get_channel(settings['appealsID'])
 	except:
 		logger.warning("didn't find variable 'appealsID' in save file - reverting to server default")
 		if hdebug.hdebug:
-			appeals = bot.get_channel(454248865810612234) #channel that bot prints mod alerts to
+			appeals = bot.get_channel(priv.testAppeals)
 		else:
-			appeals = bot.get_channel(351440975819702272)
+			appeals = bot.get_channel(priv.liveAppeals)
 		settings['appealsID'] = appeals.id
 
 		with open(os.path.join(fileDir, settingsFile), "w") as file:
