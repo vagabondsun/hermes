@@ -1,2 +1,4 @@
 privatevalues.py
 hdebug.py
+debug/**
+live/**
