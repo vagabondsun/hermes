@@ -1,2 +1,2 @@
-# hermes
-Alt+H's general utility bot
+# Hermes
+Alt+H's general utility bot.
