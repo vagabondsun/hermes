@@ -1,0 +1,8 @@
+2019-09-21 12:14:54,145 - discord.client - INFO - logging in using static token
+2019-09-21 12:14:54,721 - discord.gateway - INFO - Created websocket connected to wss://gateway.discord.gg?encoding=json&v=6&compress=zlib-stream
+2019-09-21 12:14:54,723 - discord.gateway - INFO - Shard ID None has sent the IDENTIFY payload.
+2019-09-21 12:14:54,885 - discord.gateway - INFO - Shard ID None has connected to Gateway: ["gateway-prd-main-3dcm",{"micros":26791,"calls":["discord-sessions-prd-1-4",{"micros":25635,"calls":["start_session",{"micros":19667,"calls":["api-prd-main-d32c",{"micros":15696,"calls":["get_user",{"micros":4529},"add_authorized_ip",{"micros":5},"get_guilds",{"micros":4529},"coros_wait",{"micros":3}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: 7b4a233a6311e3b5a7e592c66d06c83b).
+2019-09-21 12:14:56,889 - discord - INFO - got server: Alt+H
+2019-09-21 12:14:56,890 - discord - INFO - got botlog channel: botstream_staff
+2019-09-21 12:14:56,891 - discord - INFO - got appeals channel: appeals
+2019-09-21 12:14:56,900 - discord - INFO - logged into Alt+H as Hermes#4944

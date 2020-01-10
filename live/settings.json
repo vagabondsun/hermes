@@ -1,0 +1,11 @@
+{
+    "verifOpen": true,
+    "passphrase": "haircut",
+    "refdoclink": "<http://bit.ly/alth-refdoc>",
+    "requiredTimeDiff": 61200,
+    "verificationCheckPeriod": 15,
+    "minVouchXP": 5000,
+    "botlogID": 312717660871983106,
+    "appealsID": 351440975819702272,
+    "minVouchRole": 282230474422747136
+}
