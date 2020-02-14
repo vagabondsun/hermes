@@ -19,4 +19,22 @@ async def ping(ctx):
 	pingTime = datetime.datetime.now() - startTime
 	await ctx.send("Pong! :open_mouth: _(" + str(round(pingTime.microseconds/1000000, 3)) + " seconds)_")
 
+@cfg.bot.event
+async def on_message(message):
+	#bot shouldn't reply to itself
+	if message.author.id == cfg.bot.user.id:
+            return
+
+	m = cfg.salutations.match(message.content)
+	if m != None:
+		if m.group(1) == "hewwo":
+			emoji = "<:crazy:678015749020975148> "
+		elif m.group(2) == "everypony" or m.group(1) == "howdy":
+			emoji = "<:cowhand:678015748723048506> "
+		else:
+			emoji = "<:blushing:678012723879084097> "
+		await message.channel.send(emoji + (m.group(1) + ", " + message.author.display_name + "!").capitalize())
+
+	await cfg.bot.process_commands(message)
+
 cfg.bot.run(cfg.token)

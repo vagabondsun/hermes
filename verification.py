@@ -212,10 +212,10 @@ Please input the passphrase to complete verification.""".format(cfg.refdoclink))
 
 	cfg.botlog.send("Wait time for " + member.name + " elapsed; sending password request.")
 
-@cfg.bot.event
-async def on_message(message):
+@cfg.bot.listen('on_message')
+async def pwd_message(message):
 
-	if message.content.startswith(cfg.passphrase):
+	if message.content.lower().startswith(cfg.passphrase):
 
 		member = cfg.server.get_member(message.author.id)
 		if member == None:

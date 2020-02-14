@@ -1,12 +1,12 @@
-2020-01-10 20:55:19,653 - discord.client - INFO - logging in using static token
-2020-01-10 20:55:20,266 - discord.gateway - INFO - Created websocket connected to wss://gateway.discord.gg?encoding=json&v=6&compress=zlib-stream
-2020-01-10 20:55:20,268 - discord.gateway - INFO - Shard ID None has sent the IDENTIFY payload.
-2020-01-10 20:55:20,442 - discord.gateway - INFO - Shard ID None has connected to Gateway: ["gateway-prd-main-bft8",{"micros":43169,"calls":["discord-sessions-prd-1-7",{"micros":39393,"calls":["start_session",{"micros":38002,"calls":["api-prd-main-rc7v",{"micros":35084,"calls":["get_user",{"micros":3433},"add_authorized_ip",{"micros":2441},"get_guilds",{"micros":2244},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":2,"calls":[]},"presence_connect",{"micros":1,"calls":[]}]}]}] (Session ID: 5d9c941e4d5aaaefcae9b52b2249da47).
-2020-01-10 20:55:22,444 - discord - INFO - got server: testserver
-2020-01-10 20:55:22,444 - discord - INFO - got botlog channel: general
-2020-01-10 20:55:22,444 - discord - INFO - got appeals channel: appeals
-2020-01-10 20:55:22,453 - discord - INFO - logged into testserver as Perseus#5797
-2020-01-10 20:55:56,872 - discord.client - INFO - Cleaning up tasks.
-2020-01-10 20:55:56,872 - discord.client - INFO - Cleaning up after 5 tasks.
-2020-01-10 20:55:57,007 - discord.client - INFO - All tasks finished cancelling.
-2020-01-10 20:55:57,007 - discord.client - INFO - Closing the event loop.
+2020-02-14 23:16:40,802 - discord.client - INFO - logging in using static token
+2020-02-14 23:16:41,488 - discord.gateway - INFO - Created websocket connected to wss://gateway.discord.gg?encoding=json&v=6&compress=zlib-stream
+2020-02-14 23:16:41,490 - discord.gateway - INFO - Shard ID None has sent the IDENTIFY payload.
+2020-02-14 23:16:41,669 - discord.gateway - INFO - Shard ID None has connected to Gateway: ["gateway-prd-main-2t0p",{"micros":46258,"calls":["discord-sessions-prd-1-29",{"micros":44364,"calls":["start_session",{"micros":41778,"calls":["api-prd-main-67q1",{"micros":39238,"calls":["get_user",{"micros":3905},"add_authorized_ip",{"micros":2578},"get_guilds",{"micros":2856},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":3,"calls":[]},"presence_connect",{"micros":1455,"calls":[]}]}]}] (Session ID: 22863cb6369defb33479e25c88434269).
+2020-02-14 23:16:43,672 - discord - INFO - got server: testserver
+2020-02-14 23:16:43,672 - discord - INFO - got botlog channel: botstream
+2020-02-14 23:16:43,672 - discord - INFO - got appeals channel: appeals
+2020-02-14 23:16:43,674 - discord - INFO - logged into testserver as Perseus#5797
+2020-02-14 23:25:03,665 - discord.client - INFO - Cleaning up tasks.
+2020-02-14 23:25:03,665 - discord.client - INFO - Cleaning up after 5 tasks.
+2020-02-14 23:25:13,710 - discord.client - INFO - All tasks finished cancelling.
+2020-02-14 23:25:13,710 - discord.client - INFO - Closing the event loop.

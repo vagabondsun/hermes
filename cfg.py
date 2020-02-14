@@ -74,6 +74,9 @@ if hdebug.hdebug:
 else:
 	fileDir = 'live'
 
+# ~~~~~~ other shit ~~~~~~
+salutations = re.compile(r"(?i)^(well met|bonjour|greetings|salutations|(?:me|h)owdy|h(?:i)+|(?:ny|h)e(?:ll|ww)(?:o)+|hola|(?:g(?:ood |')?)?(?:(?:mornin|evenin)(?:g)*|afternoon|day))\W* (alt(?:.)*h|eve(?:r|w)y(?:one|being|body|pony)|fol(?:ks|x)|f(?:r|w)iend(?:o)*s|guys|hermes|people(s)*|peeps|ppl|(?:n)?(?:y)?(?:')?all)")
+
 # ~~~~~~ save file ~~~~~~
 
 settingsFile = 'settings.json'
