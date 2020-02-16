@@ -101,7 +101,7 @@ async def checkqueues():
 
 		member = cfg.server.get_member(request['user'])
 		if member == None:
-			cfg.botlog.send("Can't find user with id `" + request['user'] + "` in the server any more. Their verification request will be dumped.")
+			await cfg.botlog.send("Can't find user with id `" + request['user'] + "` in the server any more. Their verification request will be dumped.")
 			cfg.pendingq.pop(requestID)
 			with open(os.path.join(cfg.fileDir, cfg.pendingqfile), "w") as file:
 				json.dump(cfg.pendingq, file, indent=4)
@@ -121,7 +121,7 @@ async def checkqueues():
 
 				member = cfg.server.get_member(request['user'])
 				if member == None:
-					cfg.botlog.send("Can't find user with id `" + request['user'] + "` in the server any more. Their verification request will be dumped.")
+					await cfg.botlog.send("Can't find user with id `" + request['user'] + "` in the server any more. Their verification request will be dumped.")
 					return
 
 				await member.add_roles(verified)
@@ -185,11 +185,11 @@ async def checkqueues():
 
 			if resp.content.startswith("reason:"):
 				await member.send("You have been denied access to the Alt+H server. Reason given:" + resp.content[7:])
-				cfg.botlog.send("Sent reason to user.")
+				await cfg.botlog.send("Sent reason to user.")
 
 			elif resp.content.startswith("!n"):
 				await member.send("You have been denied access to the Alt+H server.")
-				cfg.botlog.send("No reason for denial will be provided.")
+				await cfg.botlog.send("No reason for denial will be provided.")
 
 
 async def request_passphrase(request):
@@ -210,7 +210,7 @@ async def request_passphrase(request):
 	await member.send("""<:exclamation_exclamation:534138087966638081> **Before we grant you access**, we need to confirm you've read the Discord Reference Document ({})
 Please input the passphrase to complete verification.""".format(cfg.refdoclink))
 
-	cfg.botlog.send("Wait time for " + member.name + " elapsed; sending password request.")
+	await cfg.botlog.send("Wait time for " + member.name + " elapsed; sending password request.")
 
 @cfg.bot.listen('on_message')
 async def pwd_message(message):
