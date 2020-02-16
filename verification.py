@@ -242,8 +242,6 @@ async def pwd_message(message):
 		with open(os.path.join(cfg.fileDir, cfg.passwordqfile), "w") as file:
 			json.dump(cfg.passwordq, file, indent=4)
 
-	await cfg.bot.process_commands(message)
-
 ## caller for the verification task loop ##
 async def checkloop():
 

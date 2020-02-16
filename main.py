@@ -19,11 +19,11 @@ async def ping(ctx):
 	pingTime = datetime.datetime.now() - startTime
 	await ctx.send("Pong! :open_mouth: _(" + str(round(pingTime.microseconds/1000000, 3)) + " seconds)_")
 
-@cfg.bot.event
-async def on_message(message):
+@cfg.bot.listen('on_message')
+async def salutation_message(message):
 	#bot shouldn't reply to itself
 	if message.author.id == cfg.bot.user.id:
-            return
+		return
 
 	m = cfg.salutations.match(message.content)
 	if m != None:
@@ -34,7 +34,5 @@ async def on_message(message):
 		else:
 			emoji = "<:blushing:678012723879084097> "
 		await message.channel.send(emoji + (m.group(1) + ", " + message.author.display_name + "!").capitalize())
-
-	await cfg.bot.process_commands(message)
 
 cfg.bot.run(cfg.token)
