@@ -214,6 +214,8 @@ Please input the passphrase to complete verification.""".format(cfg.refdoclink))
 
 @cfg.bot.listen('on_message')
 async def pwd_message(message):
+	if message.author.id == cfg.bot.user.id:
+		return
 
 	if message.content.lower().startswith(cfg.passphrase):
 
