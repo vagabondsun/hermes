@@ -101,7 +101,7 @@ async def checkqueues():
 
 		member = cfg.server.get_member(request['user'])
 		if member == None:
-			await cfg.botlog.send("Can't find user with id `" + request['user'] + "` in the server any more. Their verification request will be dumped.")
+			await cfg.botlog.send("Can't find user with id `" + str(request['user']) + "` in the server any more. Their verification request will be dumped.")
 			cfg.pendingq.pop(requestID)
 			with open(os.path.join(cfg.fileDir, cfg.pendingqfile), "w") as file:
 				json.dump(cfg.pendingq, file, indent=4)
@@ -121,7 +121,7 @@ async def checkqueues():
 
 				member = cfg.server.get_member(request['user'])
 				if member == None:
-					await cfg.botlog.send("Can't find user with id `" + request['user'] + "` in the server any more. Their verification request will be dumped.")
+					await cfg.botlog.send("Can't find user with id `" + str(request['user']) + "` in the server any more. Their verification request will be dumped.")
 					return
 
 				await member.add_roles(verified)
