@@ -211,7 +211,7 @@ def is_PM():
 #checks whether or not a user has the 'staff' role
 def is_staff():
 	async def predicate(ctx):
-		if not any(role.name == "staff" for role in ctx.message.author.roles) and not any(role.name == "moderator" for role in ctx.message.author.roles):
+		if not any(role.name == "alt+h staff" for role in ctx.message.author.roles) and not any(role.name == "server moderator" for role in ctx.message.author.roles):
 			await ctx.send("You must be a member of staff or a moderator to use this command.")
 			return False
 		return True
