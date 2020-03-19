@@ -225,22 +225,36 @@ async def pwd_message(message):
 
 		req = None
 		reqID = None
+		inpasswordq = False
+		inpendingq = False
+
+		for requestID, request in cfg.pendingq.items():
+			if request['user'] == member.id:
+				req = request
+				reqID = requestID
+				inpendingq = True
+				break
+
+		if inpendingq:
+			await member.add_roles(verified)
+			await member.send("<:ok_hand_hmn_y2:534138088373485618> Thank you for reading the rules! Hermes will ask you for the password at the end of the wait period.")
+			return
+
 		for requestID, request in cfg.passwordq.items():
 			if request['user'] == member.id:
 				req = request
 				reqID = requestID
+				inpasswordq = True
 				break
 
-		if req == None:
-			return
+		if inpasswordq:
+			await member.add_roles(verified)
+			await member.send("<:tada:534138088541388810> You've been successfully verified. Enjoy the server!")
+			await cfg.botlog.send("**" + member.name + "** has been verified.")
 
-		await member.add_roles(verified)
-		await member.send("<:tada:534138088541388810> You've been successfully verified. Enjoy the server!")
-		await cfg.botlog.send("**" + member.name + "** has been verified.")
-
-		cfg.passwordq.pop(reqID)
-		with open(os.path.join(cfg.fileDir, cfg.passwordqfile), "w") as file:
-			json.dump(cfg.passwordq, file, indent=4)
+			cfg.passwordq.pop(reqID)
+			with open(os.path.join(cfg.fileDir, cfg.passwordqfile), "w") as file:
+				json.dump(cfg.passwordq, file, indent=4)
 
 ## caller for the verification task loop ##
 async def checkloop():
