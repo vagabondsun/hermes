@@ -135,11 +135,11 @@ async def checkqueues():
 	#request loop - people who have just sent !verify
 	for requestID, request in cfg.requestq.copy().items(): #using a temporary copy bc dicts can't change size while being iterated over
 
-		member = cfg.server.get_member(request['user'])
-
 		cfg.requestq.pop(requestID)
 		with open(os.path.join(cfg.fileDir, cfg.requestqfile), "w") as file:
 			json.dump(cfg.requestq, file, indent=4)
+
+		member = cfg.server.get_member(request['user'])
 
 		if member == None: #assume they've left
 			return
@@ -236,7 +236,6 @@ async def pwd_message(message):
 				break
 
 		if inpendingq:
-			await member.add_roles(verified)
 			await member.send("<:ok_hand_hmn_y2:534138088373485618> Thank you for reading the rules! Hermes will ask you for the password at the end of the wait period.")
 			return
 

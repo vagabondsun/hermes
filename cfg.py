@@ -5,6 +5,7 @@ import os
 from os import path
 
 import logging
+import logging.handlers
 import pprint
 
 import time,datetime
@@ -38,6 +39,11 @@ if hdebug.hdebug:
 else:
 	loggerFilename = 'hermes.log'
 
+smtph = logging.handler.SMTPHandler(mailhost=("mail.yoursever.de", 587),
+									fromaddr="hermes@alt-h.net",
+									toaddrs="webmaster@alt-h.net",
+									subject=u"Oopsie woopsie! Hermes did a fucky wucky!")
+
 fh = logging.FileHandler(filename=loggerFilename, encoding='utf-8', mode='w')
 fh.setLevel(logging.DEBUG)
 
@@ -51,6 +57,7 @@ fh.setFormatter(formatter)
 
 logger.addHandler(fh)
 logger.addHandler(ch)
+logger.addHandler(smtph)
 
 logger.debug('file logging initialized successfully')
 
