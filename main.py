@@ -7,9 +7,8 @@ async def on_ready():
 	await cfg.init()
 	import verification
 	import admin
-	import pronouns
+	#import pronouns
 	import lookup
-	import discourse
 	logger.info('logged into {0.name} as {1.user}'.format(cfg.server, bot))
 	vCheckLoop = bot.loop.create_task(verification.checkloop())
 

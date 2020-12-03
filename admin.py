@@ -308,3 +308,8 @@ async def hackban(ctx, uuid):
 	await ctx.send("Added user with ID " + str(uuid) + " to banlist.")
 
 ## debug ##
+
+@cfg.is_staff()
+async def exception(ctx):
+	raise Exception('uh oh!')
+	await ctx.send("Raised an exception. You should get an email about this")
