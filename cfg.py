@@ -66,8 +66,7 @@ logger.addHandler(smtph)
 logger.debug('file logging initialized successfully')
 
 bot = commands.Bot( command_prefix='!',
-					intents=intents,
-					member_cache_flags=memberCache)
+					intents=intents)
 
 if hdebug.hdebug:
 	token = priv.debugToken
