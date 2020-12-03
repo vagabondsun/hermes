@@ -45,7 +45,7 @@ if hdebug.hdebug:
 else:
 	loggerFilename = 'hermes.log'
 
-smtph = logging.handler.SMTPHandler(mailhost=("mail.yoursever.de", 587),
+smtph = logging.handlers.SMTPHandler(mailhost=("mail.yoursever.de", 587),
 									fromaddr="hermes@alt-h.net",
 									toaddrs="webmaster@alt-h.net",
 									subject=u"Oopsie woopsie! Hermes did a fucky wucky!")
