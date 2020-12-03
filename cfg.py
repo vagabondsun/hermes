@@ -47,7 +47,7 @@ smtph = logging.handlers.SMTPHandler(mailhost=("mail.yoursever.de", 587),
 									fromaddr="hermes@alt-h.net",
 									toaddrs="webmaster@alt-h.net",
 									credentials=("hermes@alt-h.net", priv.smtpPassword)
-									subject=u"Oopsie woopsie! Hermes did a fucky wucky!")
+									subject="Oopsie woopsie! Hermes did a fucky wucky!")
 smtph.setLevel(logging.ERROR)
 
 fh = logging.FileHandler(filename=loggerFilename, encoding='utf-8', mode='w')
