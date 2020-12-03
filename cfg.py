@@ -28,6 +28,13 @@ from tatsumaki.wrapper import ApiWrapper as TatsuWrapper
 
 from pydiscourse import DiscourseClient
 
+# ~~~~~~ intents ~~~~~~~
+intents = discord.Intents.default()
+intents.members = True
+
+memberCache = discord.MemberCacheFlags.from_intents(	online = True,
+															joined = True)
+
 # ~~~~~~ logger stuff ~~~~~~
 
 logger = logging.getLogger('discord')
@@ -61,7 +68,9 @@ logger.addHandler(smtph)
 
 logger.debug('file logging initialized successfully')
 
-bot = commands.Bot(command_prefix='!')
+bot = commands.Bot( command_prefix='!',
+					intents=intents,
+					member_cache_flags=memberCache)
 
 if hdebug.hdebug:
 	token = priv.debugToken
@@ -82,7 +91,7 @@ else:
 	fileDir = 'live'
 
 # ~~~~~~ other shit ~~~~~~
-salutations = re.compile(r"(?i)^(well met|bonjour|greetings|salutations|(?:me|h)owdy|h(?:i)+|(?:ny|h)e(?:ll|ww)(?:o)+|hola|(?:g(?:ood |')?)?(?:(?:mornin|evenin)(?:g)*|afternoon|day))\W* (alt(?:.)*h|eve(?:r|w)y(?:one|being|body|pony)|fol(?:ks|x)|f(?:r|w)iend(?:o)*s|guys|hermes|people(s)*|peeps|ppl|(?:n)?(?:y)?(?:')?all)")
+salutations = re.compile(r"(?i)^(well met|bonjour|greetings|salutations|(?:me|h)owdy|h(?:i)+|(?:ny|h)e(?:ll|ww)(?:o)+|hola|(?:g(?:ood |')?)?(?:(?:mornin|evenin)(?:g)*|afternoon|day))\W+(to) (alt(?:.)*h|eve(?:r|w)y(?:one|being|body|pony)|fol(?:ks|x)|f(?:r|w)iend(?:o)*s|guys|hermes|people(s)*|peeps|ppl|(?:n)?(?:y)?(?:')?all)")
 
 # ~~~~~~ save file ~~~~~~
 
