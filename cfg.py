@@ -46,7 +46,7 @@ else:
 smtph = logging.handlers.SMTPHandler(mailhost=("mail.yoursever.de", 587),
 									fromaddr="hermes@alt-h.net",
 									toaddrs="webmaster@alt-h.net",
-									credentials=("hermes@alt-h.net", priv.smtpPassword)
+									credentials=("hermes@alt-h.net", priv.smtpPassword),
 									subject="Oopsie woopsie! Hermes did a fucky wucky!")
 smtph.setLevel(logging.ERROR)
 
