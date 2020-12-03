@@ -32,8 +32,7 @@ from pydiscourse import DiscourseClient
 intents = discord.Intents.default()
 intents.members = True
 
-memberCache = discord.MemberCacheFlags.from_intents(	online = True,
-															joined = True)
+memberCache = discord.MemberCacheFlags(online = True, joined = True)
 
 # ~~~~~~ logger stuff ~~~~~~
 
