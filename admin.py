@@ -160,7 +160,7 @@ async def pending_check(ctx):
 		for requestID, request in cfg.pendingq.copy().items():
 			member = cfg.server.get_member(request['user'])
 			if member == None:
-				cfg.botlog.send("Can't find user with id `" + str(request['user']) + "` in the server any more. Their verification request will be dumped.")
+				await cfg.botlog.send("Can't find user with id `" + str(request['user']) + "` in the server any more. Their verification request will be dumped.")
 				cfg.pendingq.pop(requestID)
 				cfg.settings['pendingq'] = cfg.pendingq
 				continue
@@ -176,7 +176,7 @@ async def pending_check(ctx):
 		for requestID, request in cfg.passwordq.copy().items():
 			member = cfg.server.get_member(request['user'])
 			if member == None:
-				cfg.botlog.send("Can't find user with id `" + str(request['user']) + "` in the server any more. Their verification request will be dumped.")
+				await cfg.botlog.send("Can't find user with id `" + str(request['user']) + "` in the server any more. Their verification request will be dumped.")
 				cfg.passwordq.pop(requestID)
 				cfg.settings['passwordq'] = cfg.passwordq
 				continue
@@ -309,6 +309,7 @@ async def hackban(ctx, uuid):
 
 ## debug ##
 
+@cfg.bot.command()
 @cfg.is_staff()
 async def exception(ctx):
 	raise Exception('uh oh!')

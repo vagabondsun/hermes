@@ -3,3 +3,4 @@ hdebug.py
 debug/**
 live/**
 *.log
+__pychace__
