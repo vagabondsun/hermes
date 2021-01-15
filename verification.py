@@ -124,39 +124,36 @@ async def checkqueues():
 				with open(os.path.join(cfg.fileDir, cfg.pendingqfile), "w") as file:
 					json.dump(cfg.pendingq, file, indent=4)
 
-				member = cfg.server.get_member(request['user'])
-				if member == None:
-					await cfg.botlog.send("Can't find user with id `" + str(request['user']) + "` in the server any more. Their verification request will be dumped.")
-					return
-
 				await member.add_roles(verified)
-				await member.send("""<:tada:534138088541388810> You've been successfully verified!\nNow that you have access to the rest of the server you can:\n
-				Consider saying hello in the <#257777353659383809> channel\n
-				Assign yourself pronoun roles with roleypoly: <https://roleypoly.com/s/206742087562035202>\n
-
-				\nEnjoy the server!""")
-				await cfg.botlog.send("**" + member.name + "** has been verified.")
+				try:
+					await member.send("""<:tada:534138088541388810> You've been successfully verified! Enjoy the server!""")
+					await cfg.botlog.send("**" + member.name + "** has been verified.")
+				except discord.errors.Forbidden:
+					await cfg.botlog.send("**" + member.name + "** has been verified. However, it seems the user has DMs from server members disabled, so they couldn't be notified.")
 
 			else:
 				await request_passphrase(request)
 
-	logger.info("checking for sent requests - found " + str(len(cfg.requestq)))
+	logger.debug("checking for sent requests - found " + str(len(cfg.requestq)))
 	#request loop - people who have just sent !verify
 	for requestID, request in cfg.requestq.copy().items(): #using a temporary copy bc dicts can't change size while being iterated over
 
-		cfg.requestq.pop(requestID)
-		with open(os.path.join(cfg.fileDir, cfg.requestqfile), "w") as file:
-			json.dump(cfg.requestq, file, indent=4)
-
 		member = cfg.server.get_member(request['user'])
 
-		if member == None: #assume they've left
+		try:
+			if 'bugged' in request and request['bugged']:
+				request['bugged'] = False
+			await member.send("Request recieved. Awaiting moderator response...")
+		except discord.errors.Forbidden:
+			if 'bugged' not in request:
+				await cfg.botlog.send("It seems like **" + member.name + "** has DMs from server members disabled. The request will remain in the queue until this is resolved.")
+				request['bugged'] = True
 			return
 
-		try:
-			await member.send("Request recieved. Awaiting moderator response...")
-		except Forbidden:
-			await cfg.botlog.send("User **" + member.name + "** tried to submit a verification request, but DMs from server members are disabled. Skipping...")
+		if member == None: #assume they've left
+			cfg.requestq.pop(requestID)
+			with open(os.path.join(cfg.fileDir, cfg.requestqfile), "w") as file:
+				json.dump(cfg.requestq, file, indent=4)
 			return
 
 		vouchtext = ''
@@ -172,17 +169,23 @@ async def checkqueues():
 		resp = await bot.wait_for('message', check=check)
 
 		if resp.content.startswith("!y"):
-
 			if request['vouch'] != 0:
-
 				await cfg.botlog.send("**" + member.name + "** will be verified immediately.")
 				await request_passphrase(request)
 
 			else:
+				try:
+					await cfg.botlog.send("**" + member.name + "** will be verified at the end of the delay period.")
+					await member.send("<:tick:534138088549646356> Your verification request has been approved. It can take a little while to process this; you'll receive another message when it's done.")
+					await member.send(f"""While you're waiting, check out the **Discord reference document** ({cfg.refdoclink}) to familiarize yourself with the rules. Feel free to message a mod if there's anything in the document you would like explained.""")
+				except discord.errors.Forbidden:
+					await cfg.botlog.send("It seems like **" + member.name + "** has DMs from server members disabled. The request will remain in the queue until this is resolved.")
+					request['bugged'] = True
+					return
 
-				await cfg.botlog.send("**" + member.name + "** will be verified at the end of the delay period.")
-				await member.send("<:tick:534138088549646356> Your verification request has been approved. _It can take up to a day to process this_; you'll receive another message when it's done.")
-				await member.send("""While you're waiting, check out the **Discord reference document** ({}) to familiarize yourself with the rules.""".format(cfg.refdoclink))
+				cfg.requestq.pop(requestID)
+				with open(os.path.join(cfg.fileDir, cfg.requestqfile), "w") as file:
+					json.dump(cfg.requestq, file, indent=4)
 
 				cfg.pendingq[requestID] = request
 				with open(os.path.join(cfg.fileDir, cfg.pendingqfile), "w") as file:
@@ -197,15 +200,34 @@ async def checkqueues():
 			resp = await bot.wait_for('message', check=check)
 
 			if resp.content.startswith("reason:"):
-				await member.send("You have been denied access to the Alt+H server. Reason given:" + resp.content[7:])
-				await cfg.botlog.send("Sent reason to user.")
+				try:
+					await member.send("You have been denied access to the Alt+H server. Reason given:" + resp.content[7:])
+					await cfg.botlog.send("Sent reason to user.")
+				except discord.errors.Forbidden:
+					await cfg.botlog.send("It seems like **" + member.name + "** has DMs from server members disabled. Their request has been denied, but they can't be notified.")
 
 			elif resp.content.startswith("!n"):
-				await member.send("You have been denied access to the Alt+H server.")
-				await cfg.botlog.send("No reason for denial will be provided.")
-
+				try:
+					await member.send("You have been denied access to the Alt+H server.")
+					await cfg.botlog.send("No reason for denial will be provided.")
+				except discord.errors.Forbidden:
+					await cfg.botlog.send("It seems like **" + member.name + "** has DMs from server members disabled. Their request has been denied, but they can't be notified.")
 
 async def request_passphrase(request):
+
+	member = cfg.server.get_member(request['user'])
+	if member == None:
+		return
+
+	try:
+		await member.send(f"""<:exclamation_exclamation:534138087966638081> **Before we grant you access**, we need to confirm you've read the Discord Reference Document ({cfg.refdoclink})
+	Please input the passphrase to complete verification.""")
+		await cfg.botlog.send("Wait time for " + member.name + " elapsed; sending password request.")
+	except discord.errors.Forbidden:
+		if 'bugged' not in request or request['bugged'] == False:
+			await cfg.botlog.send("Tried to send password request to **" + member.name + "**, but it seems like this user has DMs from server members disabled. The request will remain in the queue until this is resolved.")
+			request['bugged'] = True
+		return
 
 	if request['vouch'] == 0: # only pop from the pending queue if not vouched for, requests with vouches bypass this so won't be in there
 		cfg.pendingq.pop(str(request['user']))
@@ -216,17 +238,9 @@ async def request_passphrase(request):
 	with open(os.path.join(cfg.fileDir, cfg.passwordqfile), "w") as file:
 		json.dump(cfg.passwordq, file, indent=4)
 
-	member = cfg.server.get_member(request['user'])
-	if member == None:
-		return
-
-	await member.send("""<:exclamation_exclamation:534138087966638081> **Before we grant you access**, we need to confirm you've read the Discord Reference Document ({})
-Please input the passphrase to complete verification.""".format(cfg.refdoclink))
-
-	await cfg.botlog.send("Wait time for " + member.name + " elapsed; sending password request.")
-
 @cfg.bot.listen('on_message')
 async def pwd_message(message):
+
 	if message.author.id == cfg.bot.user.id:
 		return
 
