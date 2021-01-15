@@ -50,30 +50,35 @@ async def verify(ctx, *, voucher: commands.MemberConverter = None):
 
 			if voucher != None: # if user specifies a username for voucher
 
-				voucherXP = await cfg.tatsu_score(voucher)
-				logger.info("tatsu_score: " + str(voucherXP))
-				if voucherXP < cfg.minVouchXP:
-					await ctx.send("<:exclamation_question:534138088113569794> Looks like the user you specified doesn't have permission to vouch for new members.")
-					return
+				if cfg.vouchEnabled:
 
-				await ctx.send("Sent a message to **" + voucher.name + "** asking them to confirm.")
-				await voucher.send("**" + member.name + "** is requesting access to the server and has specified you as a vouch. Can you confirm that you know this person and have agreed to vouch for them? (`!y`/`!n`)")
+					voucherXP = await cfg.tatsu_score(voucher)
+					logger.info("tatsu_score: " + str(voucherXP))
+					if voucherXP < cfg.minVouchXP:
+						await ctx.send("<:exclamation_question:534138088113569794> Looks like the user you specified doesn't have permission to vouch for new members.")
+						return
 
-				def check(msg):
-					return msg.content.startswith(("!y", "!n")) and msg.author == voucher
+					await ctx.send("Sent a message to **" + voucher.name + "** asking them to confirm.")
+					await voucher.send("**" + member.name + "** is requesting access to the server and has specified you as a vouch. Can you confirm that you know this person and have agreed to vouch for them? (`!y`/`!n`)")
 
-				resp = await bot.wait_for('message', check=check)
+					def check(msg):
+						return msg.content.startswith(("!y", "!n")) and msg.author == voucher
 
-				if resp.content.startswith("!n"):
-					await voucher.send("<:ok:534138088319090689><:no_entry:534138088545320971> **" + member.name + "** will not be verified.")
-					await ctx.send("**" + voucher.name + "** has declined to vouch.")
-					await cfg.botlog.send("**" + member.name + "** tried to request access with **" + voucher.name + "** as a vouch, but **" + voucher.name + "** declined.")
-				elif resp.content.startswith("!y"):
-					await ctx.send("<:ok_hand_hmn_y2:534138088373485618> **" + voucher.name + "** has confirmed their vouch.")
-					await voucher.send("<:ok_hand_hmn_y2:534138088373485618> **" + member.name + "** will be verified immediately. _Please be aware that your ability to vouch for people will be removed if anyone you vouch for is banned or kicked._")
+					resp = await bot.wait_for('message', check=check)
 
-					await ctx.send("Now sending request to staffroom...")
-					await build_request(ctx, voucher)
+					if resp.content.startswith("!n"):
+						await voucher.send("<:ok:534138088319090689><:no_entry:534138088545320971> **" + member.name + "** will not be verified.")
+						await ctx.send("**" + voucher.name + "** has declined to vouch.")
+						await cfg.botlog.send("**" + member.name + "** tried to request access with **" + voucher.name + "** as a vouch, but **" + voucher.name + "** declined.")
+					elif resp.content.startswith("!y"):
+						await ctx.send("<:ok_hand_hmn_y2:534138088373485618> **" + voucher.name + "** has confirmed their vouch.")
+						await voucher.send("<:ok_hand_hmn_y2:534138088373485618> **" + member.name + "** will be verified immediately. _Please be aware that your ability to vouch for people will be removed if anyone you vouch for is banned or kicked._")
+
+						await ctx.send("Now sending request to staffroom...")
+						await build_request(ctx, voucher)
+
+				else:
+					await ctx.send("The vouch system currently isn't enabled. Please send `!verify` again if you'd like to submit a regular request.")
 
 			else: # normal verif behaviour
 
@@ -95,7 +100,7 @@ async def build_request(ctx, vouch = None):
 
 async def checkqueues():
 
-	logger.debug("checking status of pending requests - currently " + str(len(cfg.pendingq)))
+	logger.info("checking status of pending requests - currently " + str(len(cfg.pendingq)))
 	#pending loop - people who have been approved and are waiting
 	for requestID, request in cfg.pendingq.copy().items(): #using a temporary copy bc dicts can't change size while being iterated over
 
@@ -109,7 +114,7 @@ async def checkqueues():
 
 		timeDiff = datetime.datetime.utcnow() - datetime.datetime.utcfromtimestamp(request['timeSent'])
 		secondsTimeDiff = timeDiff / datetime.timedelta(seconds=1)
-		logger.debug("it has been " + str(cfg.naturaltime(secondsTimeDiff)) + " since this submission was received")
+		logger.info("it has been " + str(cfg.naturaltime(secondsTimeDiff)) + " since this submission was received")
 
 		if secondsTimeDiff >= cfg.requiredTimeDiff:
 
@@ -125,13 +130,17 @@ async def checkqueues():
 					return
 
 				await member.add_roles(verified)
-				await member.send("<:tada:534138088541388810> You've been successfully verified. Enjoy the server!")
+				await member.send("""<:tada:534138088541388810> You've been successfully verified!\nNow that you have access to the rest of the server you can:\n
+				Consider saying hello in the <#257777353659383809> channel\n
+				Assign yourself pronoun roles with roleypoly: <https://roleypoly.com/s/206742087562035202>\n
+
+				\nEnjoy the server!""")
 				await cfg.botlog.send("**" + member.name + "** has been verified.")
 
 			else:
 				await request_passphrase(request)
 
-	logger.debug("checking for sent requests - found " + str(len(cfg.requestq)))
+	logger.info("checking for sent requests - found " + str(len(cfg.requestq)))
 	#request loop - people who have just sent !verify
 	for requestID, request in cfg.requestq.copy().items(): #using a temporary copy bc dicts can't change size while being iterated over
 
@@ -260,5 +269,6 @@ async def checkloop():
 
 	while not bot.is_closed():
 
+		logger.info("checking for sent requests - found " + str(len(cfg.requestq)))
 		await checkqueues()
 		await asyncio.sleep(cfg.verificationCheckPeriod)

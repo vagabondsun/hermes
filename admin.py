@@ -295,12 +295,6 @@ async def mute(ctx, user):
 	channel = discord.utils.find(lambda m: m.id == cfg.appeals, cfg.server.channels)
 	await cfg.appeals.send(user.mention + ", you have been muted, as a staff member has determined that your behaviour in the chat is currently actively damaging the wellbeing of our users and the chat environment. **This is not a kick or a ban;** you've been given access to this channel so that we can talk the issue out with you away from the main server. If it gets sorted out satisfactorily, you'll be unmuted again.")
 
-@cfg.is_PM()
-@cfg.bot.command()
-async def tell(ctx, *, message : commands.clean_content):
-	await cfg.botlog.send("A user has sent the message: " + message)
-	await ctx.send("<:tick:534138088549646356> Sent message to staffroom.")
-
 @cfg.bot.command()
 @cfg.is_staff()
 async def hackban(ctx, uuid):

@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord import Webhook, RequestsWebhookAdapter
 
 import os
 from os import path
@@ -8,9 +9,15 @@ import logging
 import logging.handlers
 import pprint
 
+import webcolors
+import PIL
+from PIL import Image, ImageOps
+
 import time,datetime
 
-import asyncio,aiohttp
+import random
+
+import asyncio,aiohttp,requests
 
 import urllib.request
 from bs4 import BeautifulSoup
@@ -78,12 +85,6 @@ else:
 
 tatsu = TatsuWrapper(priv.tatsuToken)
 
-# discourse api stuff
-forum_client = DiscourseClient(
-        'https://forum.alt-h.net',
-        api_username='Hermes',
-        api_key=priv.discourseToken)
-
 if hdebug.hdebug:
 	fileDir = 'debug'
 else:
@@ -100,10 +101,20 @@ try:
 	with open(os.path.join(fileDir, settingsFile)) as file:
 			settings = json.load(file)
 except:
-	logger.warning("file pendingq was blank - please check if this is as expected")
+	logger.warning("settings file was not found - please check if this is as expected")
 	settings = {}
 
 # ~~~~~ verification stuff ~~~~~~
+
+try:
+	vouchEnabled = settings['vouchEnabled']
+except:
+	vouchEnabled = False
+	logger.warning("didn't find variable 'verifOpen' in save file - reverting to default: " + str(vouchEnabled))
+
+	settings['vouchEnabled'] = vouchEnabled
+	with open(os.path.join(fileDir, settingsFile), "w") as file:
+		json.dump(settings, file, indent=4)
 
 try:
 	verifOpen = settings['verifOpen']
@@ -209,6 +220,17 @@ except:
 	logger.warning("file pronoundict was blank - please check if this is as expected")
 	pronoundict = {}
 
+# ------ modmail stuff ------
+
+userticketsfile = 'usertickets.json'
+
+try:
+	with open(os.path.join(fileDir, userticketsfile)) as file:
+			usertickets = json.load(file)
+except:
+	logger.warning("file usertickets was blank - please check if this is as expected")
+	usertickets = {}
+
 # ------ predicates -------
 
 #checks if the message is being sent privately
@@ -255,6 +277,11 @@ async def tatsu_score(member: commands.MemberConverter):
 
 def contains_whitespace(s):
 	return [c in s for c in string.whitespace]
+
+def generateColorImg(colorname):
+	color = webcolors.CSS3_NAMES_TO_HEX[colorname]
+	img = Image.new('RGB', (128,128), color)
+	img.save(colorname+".png")
 
 # stuff that can only happen after on_ready()
 async def init():
@@ -307,3 +334,36 @@ async def init():
 		logger.info('got appeals channel: ' + appeals.name)
 	except AttributeError:
 		logger.warning('appeals channel not found')
+
+	global modmail
+	try:
+		modmail = bot.get_channel(settings['modmailID'])
+	except:
+		logger.warning("didn't find variable 'modmailID' in save file - reverting to server default")
+		if hdebug.hdebug:
+			modmail = bot.get_channel(priv.testModmail)
+		else:
+			modmail = bot.get_channel(priv.liveModmail)
+		settings['modmailID'] = modmail.id
+
+		with open(os.path.join(fileDir, settingsFile), "w") as file:
+			json.dump(settings, file, indent=4)
+	try:
+		logger.info('got modmail channel: ' + modmail.name)
+	except AttributeError:
+		logger.warning('modmail channel not found')
+
+# ------ modmail stuff ------
+
+	global modmailWebhook
+	try:
+		modmailWebhook = Webhook.from_url(settings['modmailWebhookURL'], adapter=RequestsWebhookAdapter())
+	except KeyError:
+		logger.warning("didn't find modmail webhook - creating one now")
+		if hdebug.hdebug:
+			modmailWebhook = await modmail.create_webhook(name='DEBUG Modmail User')
+		else:
+			modmailWebhook = await modmail.create_webhook(name='Modmail User')
+		settings['modmailWebhookURL'] = modmailWebhook.url
+		with open(os.path.join(fileDir, settingsFile), "w") as file:
+			json.dump(settings, file, indent=4)
