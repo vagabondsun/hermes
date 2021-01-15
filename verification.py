@@ -53,7 +53,7 @@ async def verify(ctx, *, voucher: commands.MemberConverter = None):
 				if cfg.vouchEnabled:
 
 					voucherXP = await cfg.tatsu_score(voucher)
-					logger.info("tatsu_score: " + str(voucherXP))
+					logger.debug("tatsu_score: " + str(voucherXP))
 					if voucherXP < cfg.minVouchXP:
 						await ctx.send("<:exclamation_question:534138088113569794> Looks like the user you specified doesn't have permission to vouch for new members.")
 						return
@@ -100,7 +100,7 @@ async def build_request(ctx, vouch = None):
 
 async def checkqueues():
 
-	logger.info("checking status of pending requests - currently " + str(len(cfg.pendingq)))
+	logger.debug("checking status of pending requests - currently " + str(len(cfg.pendingq)))
 	#pending loop - people who have been approved and are waiting
 	for requestID, request in cfg.pendingq.copy().items(): #using a temporary copy bc dicts can't change size while being iterated over
 
@@ -114,7 +114,7 @@ async def checkqueues():
 
 		timeDiff = datetime.datetime.utcnow() - datetime.datetime.utcfromtimestamp(request['timeSent'])
 		secondsTimeDiff = timeDiff / datetime.timedelta(seconds=1)
-		logger.info("it has been " + str(cfg.naturaltime(secondsTimeDiff)) + " since this submission was received")
+		logger.debug("it has been " + str(cfg.naturaltime(secondsTimeDiff)) + " since this submission was received")
 
 		if secondsTimeDiff >= cfg.requiredTimeDiff:
 
@@ -287,6 +287,6 @@ async def checkloop():
 
 	while not bot.is_closed():
 
-		logger.info("checking for sent requests - found " + str(len(cfg.requestq)))
+		logger.debug("checking for sent requests - found " + str(len(cfg.requestq)))
 		await checkqueues()
 		await asyncio.sleep(cfg.verificationCheckPeriod)

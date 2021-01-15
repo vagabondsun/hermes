@@ -26,7 +26,7 @@ async def tell(ctx, *, message : commands.clean_content):
 	with open(os.path.join(cfg.fileDir, cfg.userticketsfile), "w") as file:
 		json.dump(cfg.usertickets, file, indent=4)
 
-	cfg.modmailWebhook.send(message, username=ticketName)
+	cfg.modmailWebhook.send(message, username=ticketName.capitalize(), avatar_url=f"https://www.colorhexa.com/{webcolors.CSS3_NAMES_TO_HEX[name][1:]}.png")
 
 @cfg.bot.command()
 @cfg.is_staff()
@@ -35,7 +35,7 @@ async def testwebhook(ctx, name='nothing'):
 		await cfg.modmailWebhook.send("Modmail webhook is working, but you didn't specify a valid CSS3 webcolor.", username="Modmail test")
 	else:
 		cfg.generateColorImg(name)
-		cfg.modmailWebhook.send("Modmail webhook is working!", username=name.capitalize(), avatar_url="https://localhost/home/mordev/Desktop/hermes/"+name+".png")
+		cfg.modmailWebhook.send(f"Modmail webhook is working! Proxying as {name} ({webcolors.CSS3_NAMES_TO_HEX[name]})", username=name.capitalize(), avatar_url=f"https://www.colorhexa.com/{webcolors.CSS3_NAMES_TO_HEX[name][1:]}.png")
 
 @cfg.bot.listen('on_message')
 async def reply_to_webook(message):
