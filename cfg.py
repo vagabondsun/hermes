@@ -278,11 +278,6 @@ async def tatsu_score(member: commands.MemberConverter):
 def contains_whitespace(s):
 	return [c in s for c in string.whitespace]
 
-def generateColorImg(colorname):
-	color = webcolors.CSS3_NAMES_TO_HEX[colorname]
-	img = Image.new('RGB', (128,128), color)
-	img.save(colorname+".png")
-
 # stuff that can only happen after on_ready()
 async def init():
 	#server
