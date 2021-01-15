@@ -153,7 +153,11 @@ async def checkqueues():
 		if member == None: #assume they've left
 			return
 
-		await member.send("Request recieved. Awaiting moderator response...")
+		try:
+			await member.send("Request recieved. Awaiting moderator response...")
+		except Forbidden:
+			await cfg.botlog.send("User **" + member.name + "** tried to submit a verification request, but DMs from server members are disabled. Skipping...")
+			return
 
 		vouchtext = ''
 		if request['vouch'] != 0:

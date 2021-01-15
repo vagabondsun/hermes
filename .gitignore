@@ -4,3 +4,4 @@ debug/**
 live/**
 *.log
 __pycache__
+*.png
