@@ -55,5 +55,15 @@ async def reply_to_webook(message):
 		return
 
 	targetMessage = await cfg.modmail.fetch_message(message.reference.message_id)
-	if targetMessage.author.id == modmailWebhook.id and (targetMessage.id in user['messages'] for user in cfg.usertickets):
-		logger.info("target is a webhook")
+	if (targetMessage.author.id == modmailWebhook.id):
+		userID = None
+		for u, v in cfg.usertickets.items():
+			if targetMessage.id in v['messages']:
+				 userID = u
+				 break
+		if userID == None:
+			return
+
+		user = cfg.server.get_member(int(userID))
+		await user.send(f"""_**{message.author}** says:_
+		{message.clean_content}""")
