@@ -195,16 +195,17 @@ async def checkqueues():
 			await cfg.botlog.send("Please input a reason for denial _(Hermes will look for a message starting with `reason:`; send `!n` again to skip providing a reason.)_")
 
 			def check(msg):
-				return msg.content.startswith(("reason:", "!n")) and msg.channel == botlog
+				return msg.content.startswith(("reason:", "!n")) and msg.channel == cfg.botlog
 
 			resp = await bot.wait_for('message', check=check)
 
 			if resp.content.startswith("reason:"):
 				try:
 					await member.send("You have been denied access to the Alt+H server. Reason given:" + resp.content[7:])
-					await cfg.botlog.send("Sent reason to user.")
 				except discord.errors.Forbidden:
 					await cfg.botlog.send("It seems like **" + member.name + "** has DMs from server members disabled. Their request has been denied, but they can't be notified.")
+				else:
+					await cfg.botlog.send("Sent reason to user.")
 
 			elif resp.content.startswith("!n"):
 				try:
@@ -289,4 +290,4 @@ async def checkloop():
 
 		logger.debug("checking for sent requests - found " + str(len(cfg.requestq)))
 		await checkqueues()
-		await asyncio.sleep(cfg.verificationCheckPeriod)
+		await asyncio.sleep(cfg.checkPeriod)

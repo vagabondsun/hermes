@@ -12,6 +12,7 @@ async def on_ready():
 	import lookup
 	logger.info('logged into {0.name} as {1.user}'.format(cfg.server, bot))
 	vCheckLoop = bot.loop.create_task(verification.checkloop())
+	mCheckLoop = bot.loop.create_task(modmail.checkloop())
 
 @cfg.bot.command()
 async def ping(ctx):

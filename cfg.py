@@ -165,11 +165,25 @@ except:
 		json.dump(settings, file, indent=4)
 
 try:
-	verificationCheckPeriod = settings['verificationCheckPeriod']
+	ticketExpiryPeriod = settings['ticketExpiryPeriod']
 except:
-	verificationCheckPeriod = 10 #in seconds
-	logger.warning("didn't find variable 'verificationCheckPeriod' in save file - reverting to default")
-	settings['verificationCheckPeriod'] = verificationCheckPeriod
+	if hdebug.hdebug:
+		ticketExpiryPeriod = 300 #in seconds
+		logger.warning("didn't find variable 'ticketExpiryPeriod' in save file - reverting to DEBUG default: " + str(ticketExpiryPeriod))
+	else:
+		ticketExpiryPeriod = 259200 #in seconds
+		logger.warning("didn't find variable 'ticketExpiryPeriod' in save file - reverting to LIVE default: " + str(ticketExpiryPeriod))
+
+	settings['ticketExpiryPeriod'] = ticketExpiryPeriod
+	with open(os.path.join(fileDir, settingsFile), "w") as file:
+		json.dump(settings, file, indent=4)
+
+try:
+	checkPeriod = settings['checkPeriod']
+except:
+	checkPeriod = 10 #in seconds
+	logger.warning("didn't find variable 'checkPeriod' in save file - reverting to default")
+	settings['checkPeriod'] = checkPeriod
 	with open(os.path.join(fileDir, settingsFile), "w") as file:
 		json.dump(settings, file, indent=4)
 
@@ -243,7 +257,7 @@ def is_PM():
 	async def predicate(ctx):
 
 		if not ctx.guild is None:
-			await ctx.send("This command must be used in a private message.")
+			await ctx.send("<:no:534138088683864064> This command must be used in a private message.")
 			return False
 		return True
 
@@ -253,7 +267,7 @@ def is_PM():
 def is_staff():
 	async def predicate(ctx):
 		if not any(role.name == "alt+h staff" for role in ctx.message.author.roles) and not any(role.name == "server moderator" for role in ctx.message.author.roles):
-			await ctx.send("You must be a member of staff or a moderator to use this command.")
+			await ctx.send("<:no:534138088683864064> You must be a member of staff or a moderator to use this command.")
 			return False
 		return True
 	return commands.check(predicate)

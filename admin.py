@@ -115,8 +115,8 @@ async def timer(ctx, value: int):
 @verification.command(aliases=['check', 'checktimer'])
 @cfg.is_staff()
 async def checkperiod(ctx, value: int):
-	cfg.verificationCheckPeriod = value
-	cfg.settings['verificationCheckPeriod'] = cfg.verificationCheckPeriod
+	cfg.checkPeriod = value
+	cfg.settings['checkPeriod'] = cfg.checkPeriod
 	await ctx.send("<:ok:534138088319090689> Set queue check frequency to every " + naturaltime(value) + ".")
 
 	with open(os.path.join(cfg.fileDir, cfg.settingsFile), "w") as file:
