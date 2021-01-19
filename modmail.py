@@ -13,23 +13,28 @@ from cfg import * #to enable calling things imported in cfg /without/ the namesp
 @cfg.bot.command()
 async def tell(ctx, *, message : commands.clean_content):
 
-	if ctx.author.id in cfg.usertickets:
-		ticketName = cfg.usertickets[ctx.author.id]['color']
-		cfg.usertickets[ctx.author.id]['lastSent'] = datetime.datetime.utcnow().timestamp()
+	authorKey = str(ctx.author.id)
+	if authorKey in cfg.usertickets:
+		ticketName = cfg.usertickets[authorKey]['color']
+		cfg.usertickets[authorKey]['lastSent'] = datetime.datetime.utcnow().timestamp()
 		try:
-			cfg.modmailWebhook.send(message, username=ticketName.capitalize(), avatar_url=f"https://www.colorhexa.com/{webcolors.CSS3_NAMES_TO_HEX[ticketName][1:]}.png")
-			await ctx.message.add_reaction("<:tick:534138088549646356>")
+			msg = cfg.modmailWebhook.send(message, username=ticketName.capitalize(), avatar_url=f"https://www.colorhexa.com/{webcolors.CSS3_NAMES_TO_HEX[ticketName][1:]}.png", wait=True) #wait allows the message to be returned
 		except:
 			await ctx.send("<:cross:534138087534755861> Your message could not be sent. Please try again, and if the error persists, let a member of staff know.")
+		else:
+			await ctx.message.add_reaction("<:tick:534138088549646356>")
+			cfg.usertickets[authorKey]['messages'].append(msg.id)
 	else:
 		ticketName = random.choice(list(webcolors.CSS3_NAMES_TO_HEX.keys()))
-		cfg.usertickets[ctx.author.id] = { 'color': ticketName, 'lastSent' : datetime.datetime.utcnow().timestamp() }
+		cfg.usertickets[authorKey] = { 'color': ticketName, 'lastSent' : datetime.datetime.utcnow().timestamp(), 'messages' : [] }
 		try:
-			cfg.modmailWebhook.send(message, username=ticketName.capitalize(), avatar_url=f"https://www.colorhexa.com/{webcolors.CSS3_NAMES_TO_HEX[ticketName][1:]}.png")
-			await ctx.send(f"<:tick:534138088549646356> Sent message to staffroom as anon user {ticketName} ({webcolors.CSS3_NAMES_TO_HEX[ticketName]})")
+			msg = cfg.modmailWebhook.send(message, username=ticketName.capitalize(), avatar_url=f"https://www.colorhexa.com/{webcolors.CSS3_NAMES_TO_HEX[ticketName][1:]}.png", wait=True)  #wait allows the message to be returned
 		except:
 			await ctx.send("<:cross:534138087534755861> Your message could not be sent. Please try again, and if the error persists, let a member of staff know.")
-			cfg.usertickets.pop(ctx.author.id)
+			cfg.usertickets.pop(authorKey)
+		else:
+			await ctx.send(f"<:tick:534138088549646356> Sent message to staffroom as anon user {ticketName} ({webcolors.CSS3_NAMES_TO_HEX[ticketName]})")
+			cfg.usertickets[authorKey]['messages'].append(msg.id)
 
 
 	#dict gets edited either way so the dump happens outside of the if
@@ -46,5 +51,9 @@ async def testwebhook(ctx, name='nothing'):
 
 @cfg.bot.listen('on_message')
 async def reply_to_webook(message):
-	if message.reference is not None:
-		pass
+	if message.reference is None:
+		return
+
+	targetMessage = await cfg.modmail.fetch_message(message.reference.message_id)
+	if targetMessage.author.id == modmailWebhook.id and (targetMessage.id in user['messages'] for user in cfg.usertickets):
+		logger.info("target is a webhook")

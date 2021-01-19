@@ -62,7 +62,10 @@ fh.setLevel(logging.DEBUG)
 
 #instantiate the handler that prints to console
 ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
+if hdebug.hdebug:
+	ch.setLevel(logging.DEBUG)
+else:
+	ch.setLevel(logging.INFO)
 
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
