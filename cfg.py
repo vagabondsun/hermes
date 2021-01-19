@@ -38,6 +38,7 @@ from pydiscourse import DiscourseClient
 # ~~~~~~ intents ~~~~~~~
 intents = discord.Intents.default()
 intents.members = True
+intents.reactions = True
 
 # ~~~~~~ logger stuff ~~~~~~
 
