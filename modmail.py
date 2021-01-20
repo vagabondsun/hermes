@@ -85,7 +85,7 @@ async def tell(ctx, *, message : commands.clean_content):
 	else:
 		if len(cfg.usertickets) == 140:
 			await ctx.message.add_reaction("<:surprised:534138088398651403> Somehow, it seems like all 140 color names are in use right now. This is probably a bug, so please consider telling a mod about it.")
-			break
+			return
 
 		ticketName = random.choice(list(webcolors.CSS3_NAMES_TO_HEX.keys()))
 		while ticketName in cfg.usertickets:
