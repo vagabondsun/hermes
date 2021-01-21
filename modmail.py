@@ -132,7 +132,7 @@ async def activewebhooks(ctx):
 
 @cfg.bot.listen('on_message')
 async def reply_to_webook(message):
-	if message.reference is None:
+	if message.author.id != cfg.modmailWebhook.id or message.reference is None:
 		return
 
 	ticketName = await get_webhook_user(message.reference.message_id)
@@ -153,7 +153,9 @@ async def reply_to_webook(message):
 @cfg.bot.listen('on_raw_reaction_add')
 async def reveal_user(reaction):
 
-	if not (reaction.channel_id == cfg.modmail.id and reaction.emoji.name == u"\U00002753"):
+	targetMessage = await cfg.modmail.fetch_message(reaction.message_id)
+
+	if not (reaction.channel_id == cfg.modmail.id and reaction.emoji.name == u"\U00002753" and targetMessage.author.id == cfg.modmailWebhook.id):
 		return
 
 	ticketName = await get_webhook_user(reaction.message_id)
