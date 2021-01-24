@@ -29,8 +29,11 @@ async def checktickets():
 			temp = cfg.usertickets[u]['destroy']
 		except:
 			if secondsTimeDiff >= cfg.ticketExpiryPeriod:
-				user = cfg.server.get_member(v['user'])
-				await user.send(f"Your color association with {u} has expired. Next time you send a message, a new one will be selected for you <:artist_palette:801099935322865725>")
+				try:
+					temp = cfg.usertickets[u]['detached']
+				except:
+					user = cfg.server.get_member(v['user'])
+					await user.send(f"Your color association with {u} has expired. Next time you send a message, a new one will be selected for you <:artist_palette:801099935322865725>")
 				logger.info(f"cleaning naturally expired ticket {u}")
 				cfg.usertickets.pop(u)
 		else:
